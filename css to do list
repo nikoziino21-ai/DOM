@@ -1,0 +1,155 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  color: #1a202c;
+  background: #fff;
+  padding: 40px 20px;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 24px;
+}
+
+#form-task {
+  margin-bottom: 24px;
+}
+
+.form-group {
+  display: flex;
+  gap: 12px;
+}
+
+#input-testo {
+  flex: 1;
+  padding: 10px 14px;
+  font-size: 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+#input-testo:focus {
+  border-color: #334155;
+}
+
+#form-task button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1a202c;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#form-task button:hover {
+  background: #f8fafc;
+}
+
+.errore {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 6px;
+  min-height: 20px;
+}
+
+.filtri {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.btn-filtro {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #334155;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-filtro.attivo {
+  color: #fff;
+  background: #1e293b;
+  border-color: #1e293b;
+}
+
+#lista-task {
+  list-style: none;
+  border-top: 1px solid #e2e8f0;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.task-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.task-content input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.task-testo {
+  font-size: 1rem;
+  color: #1a202c;
+}
+
+.task-item.completato .task-testo {
+  text-decoration: line-through;
+  color: #94a3b8;
+}
+
+.btn-elimina {
+  padding: 6px 12px;
+  font-size: 0.875rem;
+  color: #dc2626;
+  background: #fff;
+  border: 1px solid #fca5a5;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-elimina:hover {
+  background: #fef2f2;
+}
+
+.contatore {
+  margin-top: 20px;
+  font-size: 1rem;
+  color: #1a202c;
+}
+
+#notifica {
+  display: none;
+}
