@@ -1,0 +1,207 @@
+/* STATO
+   In cima al file definisci poche variabili globali:
+   - un array di oggetti come dato principale (es. libri, ricette, film, ...)
+   - una variabile per il filtro corrente
+   - una variabile per l'ordinamento corrente
+   - una variabile per la stringa di ricerca corrente
+*/
+let tasks = [
+  { id: 1, testo: "Studiare JavaScript", completato: true },
+  { id: 2, testo: "Scrivere la ToDoList", completato: false },
+  { id: 3, testo: "Bere il caffè", completato: true },
+  { id: 4, testo: "Ripassare gli eventi DOM", completato: false }
+];
+
+let filtro = "tutti";
+
+const form = document.getElementById("form-task");
+const inputTesto = document.getElementById("input-testo");
+const divErrore = document.getElementById("errore");
+const listaTask = document.getElementById("lista-task");
+const divContatore = document.getElementById("contatore");
+const bottoniFiltro = document.querySelectorAll(".btn-filtro");
+
+
+/* RENDER()
+   Una sola funzione che ridipinge la lista. A ogni chiamata:
+   1) parte dall'array completo,
+   2) filtra,
+   3) ordina,
+   4) svuota il container DOM,
+   5) ricrea gli elementi DOM per gli oggetti risultanti.
+   Aggiorna anche conteggi e statistiche.
+   Salva lo stato in localStorage in fondo a render() (cerca tu come funziona).
+*/
+function render() {
+  listaTask.innerHTML = "";
+
+  const tasksFiltrati = tasks.filter(task => {
+    if (filtro === "attivi") return !task.completato;
+    if (filtro === "completati") return task.completato;
+    return true;
+  });
+
+  tasksFiltrati.forEach(task => {
+    const li = document.createElement("li");
+    li.className = `task-item ${task.completato ? "completato" : ""}`;
+    li.dataset.id = task.id;
+
+    const divContent = document.createElement("div");
+    divContent.className = "task-content";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = task.completato;
+
+    const span = document.createElement("span");
+    span.className = "task-testo";
+    span.textContent = task.testo;
+
+    divContent.appendChild(checkbox);
+    divContent.appendChild(span);
+
+    const btnElimina = document.createElement("button");
+    btnElimina.className = "btn-elimina";
+    btnElimina.textContent = "Elimina";
+
+    li.appendChild(divContent);
+    li.appendChild(btnElimina);
+    listaTask.appendChild(li);
+  });
+
+  const taskAttiviCount = tasks.filter(task => !task.completato).length;
+  divContatore.textContent = `Attivi: ${taskAttiviCount}`;
+}
+
+
+/* FORM CON VALIDAZIONE
+   addEventListener("submit") sul form.
+   event.preventDefault().
+   Leggi i valori con .value.trim().
+   Se uno dei campi obbligatori e' vuoto, mostra errore e return.
+   Altrimenti push allo stato, form.reset(), render().
+   Id univoco con Date.now().
+*/
+form.addEventListener("submit", event => {
+  event.preventDefault();
+  divErrore.textContent = "";
+
+  const testo = inputTesto.value.trim();
+
+  if (testo === "") {
+    divErrore.textContent = "Il campo non può essere vuoto.";
+    return;
+  }
+
+  const nuovoTask = {
+    id: Date.now(),
+    testo: testo,
+    completato: false
+  };
+
+  tasks.push(nuovoTask);
+  inputTesto.value = "";
+  render();
+});
+
+
+/* INTERAZIONI BASE — eliminare, modificare, contare
+   - Elimina: filter per id, render(). Event delegation sul container.
+   - Modifica in-place: button "Modifica". Al click il testo diventa <input>,
+     si conferma con Invio o blur.
+   - Conteggi dinamici dentro render().
+*/
+listaTask.addEventListener("click", event => {
+  if (event.target.classList.contains("btn-elimina")) {
+    const li = event.target.closest("li");
+    const id = Number(li.dataset.id);
+    tasks = tasks.filter(task => task.id !== id);
+    render();
+  }
+});
+
+listaTask.addEventListener("change", event => {
+  if (event.target.type === "checkbox") {
+    const li = event.target.closest("li");
+    const id = Number(li.dataset.id);
+    const task = tasks.find(t => t.id === id);
+    if (task) {
+      task.completato = event.target.checked;
+      render();
+    }
+  }
+});
+
+
+/* RICERCA, FILTRO, ORDINAMENTO
+   - Ricerca live: <input> con event "input". Salva in stato e render().
+   - Filtro: <select> con event "change". Salva in stato e render().
+   - Ordinamento: due button (o select). Salva in stato e render().
+   I tre si compongono dentro render() in fila.
+*/
+bottoniFiltro.forEach(bottoni => {
+  bottoni.addEventListener("click", event => {
+    bottoniFiltro.forEach(b => b.classList.remove("attivo"));
+    event.target.classList.add("attivo");
+    filtro = event.target.dataset.filtro;
+    render();
+  });
+});
+
+
+/* NOTIFICHE TEMPORANEE
+   Funzione notifica(testo) che imposta il testo del <div id="notifica">,
+   lo mostra (display: block), poi dopo 3000ms (setTimeout) lo nasconde.
+*/
+
+
+/* TEMA CHIARO/SCURO
+   Un button che chiama document.body.classList.toggle("dark").
+   In CSS scrivi le regole opposte (es. body.dark { background: #111; ... }).
+*/
+
+
+/* PERSISTENZA — localStorage (cerca tu su MDN)
+   - In fondo a render(), salva lo stato:
+       localStorage.setItem("dati", JSON.stringify(stato));
+   - All'avvio, prima della prima render(), carica:
+       const salvato = localStorage.getItem("dati");
+       if (salvato) stato = JSON.parse(salvato);
+*/
+
+
+/* RIORDINO ↑ ↓
+   Due button su ogni elemento. Click su ↑ scambia con il precedente nell'array,
+   ↓ con il successivo. Event delegation. Poi render().
+*/
+
+
+/* ESPORTAZIONE / IMPORTAZIONE JSON (cerca tu su MDN)
+   - Esporta: crea un Blob con JSON.stringify(stato), genera un URL con
+     URL.createObjectURL e simula il click su un <a download>.
+   - Importa: <input type="file"> + FileReader per leggere il contenuto come
+     testo, JSON.parse, sostituisci lo stato, render().
+*/
+
+
+/* STATISTICHE GRAFICHE
+   Almeno due indicatori: contatori grandi e/o barre orizzontali
+   (<div> con width: X% in base al dato). Aggiorna dentro render().
+*/
+
+
+/* MULTI-VISTA — lista / card / tabella
+   Una variabile globale "vista" che render() legge per decidere quale HTML
+   produrre. Tre button cambiano "vista" e chiamano render().
+*/
+
+
+/* CATEGORIE
+   Aggiungi un campo categoria nello schema. Nel form un <select> per sceglierla.
+   In render(), raggruppa con reduce in { categoria: [elementi] } e disegna un
+   header per categoria con sotto la lista di quella categoria.
+*/
+
+
+// Avvio iniziale
+render();
